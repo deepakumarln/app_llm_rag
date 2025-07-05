@@ -29,7 +29,7 @@ embed_semaphore_search = asyncio.Semaphore(EMBEDDING_MAX_REQ)
 
 OPENAI_KEY = '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'
 
-EMBED_URL = 'http://localhost:7788/embed'
+EMBED_URL = 'http://jinai:7788/embed'
 
 client = AsyncOpenAI(
     # This is the default and can be omitted

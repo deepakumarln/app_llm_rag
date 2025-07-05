@@ -6,7 +6,7 @@ import asyncio
 
 
 class ElasticRepository:
-    def __init__(self, host: str = "localhost", port: int = 9200) -> None:
+    def __init__(self, host: str = "elasticsearch", port: int = 9200) -> None:
         self.elastic_client = AsyncElasticsearch(
     hosts=[{"host":host,"port":port,"scheme":"https"}],
     verify_certs=False,

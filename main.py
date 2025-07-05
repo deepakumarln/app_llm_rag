@@ -89,6 +89,7 @@ async def search_doc(request:RAGRequest):
     try:
         texts = await vector_service.get_content_from_db(text=request.query_string,url = EMBED_URL,search_semaphore=embed_semaphore_search)
     except Exception as e:
+        logger.debug(f'Error in rag_search -> {str(e)}')
         raise HTTPException(
             detail=f"An error occurred while getting data from db - Error: {e}",
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

@@ -38,7 +38,7 @@ class ElasticRepository:
             "field": "embeddings",
             "query_vector": embeddings,
             "k": 5,
-            "num_candidates": 5,
+            "num_candidates": 10,
         }
         ):
             

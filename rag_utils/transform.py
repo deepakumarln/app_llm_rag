@@ -14,6 +14,7 @@ import httpx
 from starlette.concurrency import run_in_threadpool
 from loguru import logger
 from .exceptions import EmbedMaxConnectionTimeout, EmbedMethodException
+import inspect
 
 DEFAULT_CHUNK_SIZE = 1024 * 1024 * 50
 
@@ -98,14 +99,14 @@ async def get_text_chunks(file_name:str,models:dict) -> list[str]:
     return spacy_chunks
 
 async def embed(text: str,url:str,semaphore:asyncio.Semaphore=None) -> list[float]:
-    logger.debug(f'getting embedding for text -> {text}')
+    #logger.debug(f'getting embedding for text -> {text}')
     async with semaphore:
         try:
             async with AsyncClient() as client:
                 response = await client.post(url=url,json={'text':text})
-                logger.debug(f'got response for text -> {text} status_code -> {response.status_code}')
+                #logger.debug(f'got response for text -> {text} status_code -> {response.status_code}')
                 if semaphore.locked():
-                    logger.debug("Concurrency limit reached, waiting ...")
+                    logger.debug(f"Concurrency limit reached for function -> {inspect.stack()[1][3]}, waiting for 60 Seconds")
                     await asyncio.sleep(60)
                 if response.status_code == HTTPStatus.OK:
                     #logger.debug(f'returing the embeddings to')

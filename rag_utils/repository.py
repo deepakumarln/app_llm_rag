@@ -16,7 +16,7 @@ class ElasticRepository:
     async def insert(self,index_name:str,data:dict):
         push_data = []
         push_data.append(data)
-        logger.debug(f'pushing data into elastic')
+        logger.debug(f'pushing data into elastic -> {data}')
         def gen_data():
             for i in push_data:
                 yield {

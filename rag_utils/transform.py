@@ -98,12 +98,12 @@ async def get_text_chunks(file_name:str,models:dict) -> list[str]:
     return spacy_chunks
 
 async def embed(text: str,url:str,semaphore:asyncio.Semaphore=None) -> list[float]:
-    #logger.debug(f'getting embedding for text -> {text}')
+    logger.debug(f'getting embedding for text -> {text}')
     async with semaphore:
         try:
             async with AsyncClient() as client:
                 response = await client.post(url=url,json={'text':text})
-                #logger.debug(f'got response for text -> {response.status_code}')
+                logger.debug(f'got response for text -> {text} status_code -> {response.status_code}')
                 if semaphore.locked():
                     logger.debug("Concurrency limit reached, waiting ...")
                     await asyncio.sleep(60)

@@ -62,9 +62,9 @@ class VectorService(ElasticRepository):
         texts = []
         async for text in self.search(index_name='search_index',text=text,embeddings=embeddings):
             texts.append(text)
-        #logger.debug(f'got texts -> {texts}')
+        logger.debug(f'got texts -> {texts}')
         content = '\n'.join([i['text'] for i in texts])
-        #logger.debug(f'the contect is -> {content}')
+        logger.debug(f'the contect is -> {content}')
         return content
     
 vector_service = VectorService()

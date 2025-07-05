@@ -76,7 +76,7 @@ async def file_upload_controller(
     try:
         file_path = await save_file(file)
         pdf_processor.add_task(extract_pdf, file_path)
-        pdf_processor.add_task(vector_service.store_file_content_in_db,'./data/temp/'+file_path.split('\\')[-1]+'/'+file_path.split('\\')[-1].replace("pdf", "txt"),EMBED_URL,models,embed_semaphore_store)
+        pdf_processor.add_task(vector_service.store_file_content_in_db,'./data/temp/'+file_path.split('/')[-1]+'/'+file_path.split('/')[-1].replace("pdf", "txt"),EMBED_URL,models,embed_semaphore_store)
     except Exception as e:
         raise HTTPException(
             detail=f"An error occurred while saving file - Error: {e}",

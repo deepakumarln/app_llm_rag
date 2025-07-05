@@ -12,7 +12,7 @@ file = st.file_uploader("Choose file", type=["pdf"])
 if st.button("Submit"):
     if file is not None:
         files = {"file": (file.name, file, file.type)}
-        response = requests.post("http://localhost:8899/upload", files=files)
+        response = requests.post("http://192.168.1.87:8899/upload", files=files)
         st.write(response.text)
     else:
         st.write("No file uploaded.")
@@ -40,7 +40,7 @@ if prompt := st.chat_input("Write your prompt in this input field"):
     #                                                "chat_template_kwargs": {"enable_thinking": False}}
     #)
     
-    response = requests.post(f'http://localhost:8899/rag_search',json={'query_string':prompt},timeout=55.0)
+    response = requests.post(f'http://192.168.1.87:8899/rag_search',json={'query_string':prompt},timeout=55.0)
     
     response.raise_for_status()
     data = json.loads(response.text)

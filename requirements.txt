@@ -5,7 +5,7 @@ loguru
 httpx
 spacy
 openai
-pdfminer
+pdfminer-six
 elasticsearch
 tiktoken
 aiofiles

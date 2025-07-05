@@ -24,6 +24,10 @@ COPY --from=base /usr/local/lib/python3.12/site-packages/ /usr/local/lib/python3
 
 WORKDIR /code
 
+#MKDIR /code/data/temp
+
+#MKDIR /code/uploads
+
 COPY . /code/
 
 CMD ["uvicorn", "main:app","--host","0.0.0.0", "--port", "80", "--workers", "2"]

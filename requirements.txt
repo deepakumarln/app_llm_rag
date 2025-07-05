@@ -1,0 +1,11 @@
+fastapi
+pydantic
+uvicorn
+loguru
+httpx
+spacy
+openai
+pdfminer
+elasticsearch
+tiktoken
+aiofiles

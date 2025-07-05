@@ -1,0 +1,14 @@
+docker run -d --name elasticsearch --net elastic -p 9200:9200 -p 9300:9300 -m 1GB --cpus="2" -e "discovery.type=single-node" -e "ELASTIC_PASSWORD=password" elasticsearch:9.0.1
+
+#local setup 
+docker run -d --name elasticsearch --net elastic -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -e "ELASTIC_PASSWORD=password" elasticsearch:9.0.1
+
+docker run -d --name kibana --net elastic -p 5601:5601 kibana:9.0.1
+
+https://www.elastic.co/docs/deploy-manage/deploy/self-managed/install-kibana-with-docker
+
+docker exec -it elasticsearch /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana
+
+token -> eyJ2ZXIiOiI4LjE0LjAiLCJhZHIiOlsiMTcyLjE4LjAuMjo5MjAwIl0sImZnciI6IjVmMmY0YTRhMDU1ZTFlMjgxZTI4NWJjMTA0YjZkODY3OTgxMDgwNmUyN2IxNjQ5ZmFkMjE2MmIzMTMyN2IxNDUiLCJrZXkiOiJiR29kUlpjQmF5TjNMWWUxMnZRMjpaSlRFaFFLNG5fR0JYakl5VFg2MS13In0=
+
+*then connect to kibana from brower, it will ask for the above token, then exec into kibana and generate the verification key

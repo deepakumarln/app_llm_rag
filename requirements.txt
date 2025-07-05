@@ -9,3 +9,4 @@ pdfminer
 elasticsearch
 tiktoken
 aiofiles
+aiohttp

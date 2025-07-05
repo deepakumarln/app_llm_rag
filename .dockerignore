@@ -2,3 +2,5 @@
 *.pyc
 client.py
 utils/
+#docker_commands.txt
+#elastic_docker.txt

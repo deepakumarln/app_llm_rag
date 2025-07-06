@@ -9,6 +9,6 @@ https://www.elastic.co/docs/deploy-manage/deploy/self-managed/install-kibana-wit
 
 docker exec -it elasticsearch /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana
 
-token -> eyJ2ZXIiOiI4LjE0LjAiLCJhZHIiOlsiMTcyLjE4LjAuMjo5MjAwIl0sImZnciI6IjVmMmY0YTRhMDU1ZTFlMjgxZTI4NWJjMTA0YjZkODY3OTgxMDgwNmUyN2IxNjQ5ZmFkMjE2MmIzMTMyN2IxNDUiLCJrZXkiOiJiR29kUlpjQmF5TjNMWWUxMnZRMjpaSlRFaFFLNG5fR0JYakl5VFg2MS13In0=
+token -> 
 
 *then connect to kibana from brower, it will ask for the above token, then exec into kibana and generate the verification key

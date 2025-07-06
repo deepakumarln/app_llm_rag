@@ -4,7 +4,7 @@ import os
 
 from loguru import logger
 from .repository import ElasticRepository
-from .transform import get_text_chunks, embed,clean
+from .transform import get_text_chunks, embed,clean_text
 from datetime import datetime
 from asyncio import Semaphore
 import asyncio
@@ -58,7 +58,7 @@ class VectorService(ElasticRepository):
         #logger.debug(f'inside get contenct from db for -> {text}')
         logger.debug(f'get file from db semaphore -> {search_semaphore}')
         try:
-            _, embeddings = await embed(clean(text),url,search_semaphore)
+            _, embeddings = await embed(clean_text(text),url,search_semaphore)
         except EmbedMaxConnectionTimeout as embed_exception_timeout:
             text = embed_exception_timeout.text
             logger.debug(f'Got exception -> {exception_message} for text -> {text}')

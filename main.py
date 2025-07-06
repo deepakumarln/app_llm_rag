@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, status, File, BackgroundTasks, Body, Depends, Request, Response
 from typing import Annotated, AsyncIterator
-from rag_utils.upload import save_file
+from rag_utils.upload import save_upload_file
 from fastapi import UploadFile
 from rag_utils.service import vector_service, EMBEDDING_MAX_REQ
 from rag_utils.extractor import extract_pdf
@@ -27,7 +27,7 @@ embedding_queue = PriorityQueue(maxsize=EMBEDDING_MAX_REQ)
 embed_semaphore_store = asyncio.Semaphore(EMBEDDING_MAX_REQ)
 embed_semaphore_search = asyncio.Semaphore(EMBEDDING_MAX_REQ)
 
-OPENAI_KEY = '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'
+OPENAI_KEY = ''
 
 EMBED_URL = 'http://jinai:80/embed'
 
@@ -42,16 +42,19 @@ def rag_search_utils():
 
 @asynccontextmanager
 async def load_models(_:FastAPI) -> AsyncIterator[None]:
+    '''load the spacy model on start-up'''
     models['spacy'] = spacy.load('./en_core_web_sm/en_core_web_sm/en_core_web_sm-3.8.0/',disable=['tagger','ner','lemmatizer','textcat'])
     logger.debug(f'loaded model into memory -> {models["spacy"]}')
     yield
     
     models.clear()
 
+#load the spacy model which is used for sentencing 
 app = FastAPI(lifespan=load_models)
 
 @app.middleware('http')
 async def monitoring_middleware(request:Request,function:Callable[[Request],Awaitable[Response]]) -> Response:
+    '''General Middleware to track request and responses'''
     request_id = uuid4().hex 
     request_datetime = datetime.now(timezone.utc).isoformat()
     start_time = time.perf_counter()
@@ -68,13 +71,14 @@ async def file_upload_controller(
     file: Annotated[UploadFile, File(description="Uploaded PDF document")],
     pdf_processor:BackgroundTasks
 ):
+    '''upload handler, once uploaded it extracts text from pdf, once text is extracted load embeddings for text and text into elastic'''
     if file.content_type != "application/pdf":
         raise HTTPException(
             detail=f"Only  PDFs are supported",
             status_code=status.HTTP_400_BAD_REQUEST,
         )
     try:
-        file_path = await save_file(file)
+        file_path = await save_upload_file(file)
         pdf_processor.add_task(extract_pdf, file_path)
         pdf_processor.add_task(vector_service.store_file_content_in_db,'./data/temp/'+file_path.split('/')[-1]+'/'+file_path.split('/')[-1].replace("pdf", "txt"),EMBED_URL,models,embed_semaphore_store)
     except Exception as e:
@@ -86,6 +90,7 @@ async def file_upload_controller(
 
 @app.post('/rag_search')
 async def search_doc(request:RAGRequest):
+    '''RAG search, and send the context to model to get response'''
     try:
         texts = await vector_service.get_content_from_db(text=request.query_string,url = EMBED_URL,search_semaphore=embed_semaphore_search)
     except Exception as e:
@@ -110,12 +115,6 @@ async def search_doc(request:RAGRequest):
     {question}
     </question>"""
     logger.debug(f'the request to openai is {USER_PROMPT}')
-    #async with httpx.AsyncClient() as client:
-    #    response = await client.post(
-    #        f"http://localhost:11434/api/chat", json={"model":"qwen3:0.6b","messages": [{"role": "user", "content": USER_PROMPT}],"stream":False},timeout=50.0
-    #        )
-    #response_op = json.loads(response.content.decode('utf-8'))
-    #final_response = re.sub(r'<.*?>','',response_op['message']['content']).strip()
     response = await client.chat.completions.create(
     model="gpt-4o",
     messages=[

@@ -8,7 +8,7 @@ from loguru import logger
 
 warnings.filterwarnings("ignore")
 
-
+'''create elastic indexes'''
 es_client = Elasticsearch(
     "https://192.168.1.87:9200",
     #ssl_assert_fingerprint='0D:11:23:13:1E:3F:3E:D3:94:08:B8:BE:63:7C:0B:E2:DF:DC:65:52:C4:50:81:2D:67:5D:FB:99:11:9D:61:31',

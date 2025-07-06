@@ -2,7 +2,7 @@ import os
 import asyncio
 from openai import AsyncOpenAI
 
-KEY = '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'
+KEY = ''
 
 
 text = '''(SCHWETER und AKBIK, 2020) proposes document-level features from transformer

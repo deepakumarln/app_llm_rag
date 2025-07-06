@@ -6,7 +6,8 @@ from loguru import logger
 
 DEFAULT_CHUNK_SIZE = 1024 * 1024 * 50  # 50 megabytes
 
-async def save_file(file: UploadFile) -> str:
+async def save_upload_file(file: UploadFile) -> str:
+    '''save file in the dir'''
     await makedirs("uploads", exist_ok=True)
     filepath = os.path.join("uploads", file.filename)
     logger.debug(f'uploading file -> {file.filename} to path {filepath}')

@@ -18,12 +18,14 @@ import inspect
 
 DEFAULT_CHUNK_SIZE = 1024 * 1024 * 50
 
-async def load(filepath: str) -> AsyncGenerator[str, Any]:
+async def load_file(filepath: str) -> AsyncGenerator[str, Any]:
+    '''load the text file'''
     async with aiofiles.open(filepath, "r", encoding="utf-8") as f: 
         while chunk := await f.read(DEFAULT_CHUNK_SIZE):
             yield chunk
 
-def clean(text: str) -> str:
+def clean_text(text: str) -> str:
+    '''clean the sentences'''
     logger.debug('inside the clean block')
     t = text.replace("\n", " ")
     t = re.sub(r"\s+", " ", t)
@@ -33,20 +35,16 @@ def clean(text: str) -> str:
     cleaned_text = t.replace("\n", " ").strip()
     return cleaned_text 
 
-def count_tokens(string: str, encoding_name="cl100k_base") -> int:
-    # Get the encoding
+def count_text_tokens(string: str, encoding_name="cl100k_base") -> int:
+    '''count the tokens in the text'''
     encoding = tk.get_encoding(encoding_name)
-    
-    # Encode the string
     encoded_string = encoding.encode(string, disallowed_special=())
-
-    # Count the number of tokens
     num_tokens = len(encoded_string)
     return num_tokens
 
 
-def split_sentences_by_spacy(text:str, max_tokens:int, models:dict, overlap:int=0) -> list[str]:
-    
+def split_sentences(text:str, max_tokens:int, models:dict, overlap:int=0) -> list[str]:
+    '''split text into sentences using'''
     logger.debug(f'inside the split sentences by spacy block')
     # Load spaCy model
     try:
@@ -61,7 +59,7 @@ def split_sentences_by_spacy(text:str, max_tokens:int, models:dict, overlap:int=
     sentences = [sent.text for sent in doc.sents]
     #print(sentences[:10])
     # Tokenize sentences into tokens and accumulate tokens
-    tokens_lengths = [count_tokens(sent) for sent in sentences]
+    tokens_lengths = [count_text_tokens(sent) for sent in sentences]
     
     chunks = []
     start_idx = 0
@@ -87,18 +85,20 @@ def split_sentences_by_spacy(text:str, max_tokens:int, models:dict, overlap:int=
     return chunks
 
 async def get_text_chunks(file_name:str,models:dict) -> list[str]:
+    '''method used in service to get sentences from file'''
     logger.debug(f'inside of get_text_chunks for file -> {file_name}')
-    async for chunks in load(file_name):
+    async for chunks in load_file(file_name):
         logger.debug(f'inside of get_text_chunks, processing chunk')
         if not chunks:
             return
-        cleaned = await run_in_threadpool(clean,chunks)
+        cleaned = await run_in_threadpool(clean_text,chunks)
         t0 = time.perf_counter()
-        spacy_chunks = await run_in_threadpool(split_sentences_by_spacy,cleaned,512,models,0)
+        spacy_chunks = await run_in_threadpool(split_sentences,cleaned,512,models,0)
         logger.debug(f'finished processing get_text_chunks for file -> {file_name}, and the time it took is {time.perf_counter() - t0:.4f}')
     return spacy_chunks
 
 async def embed(text: str,url:str,semaphore:asyncio.Semaphore=None) -> list[float]:
+    '''embed the text'''
     #logger.debug(f'getting embedding for text -> {text}')
     async with semaphore:
         try:

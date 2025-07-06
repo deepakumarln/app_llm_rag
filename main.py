@@ -27,7 +27,7 @@ embedding_queue = PriorityQueue(maxsize=EMBEDDING_MAX_REQ)
 embed_semaphore_store = asyncio.Semaphore(EMBEDDING_MAX_REQ)
 embed_semaphore_search = asyncio.Semaphore(EMBEDDING_MAX_REQ)
 
-OPENAI_KEY = ''
+OPENAI_KEY = 'key'
 
 EMBED_URL = 'http://jinai:80/embed'
 

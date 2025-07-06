@@ -2,7 +2,7 @@ import os
 import asyncio
 from openai import AsyncOpenAI
 
-KEY = ''
+KEY = 'key'
 
 
 text = '''(SCHWETER und AKBIK, 2020) proposes document-level features from transformer

@@ -55,7 +55,7 @@ class VectorService(ElasticRepository):
                 logger.debug(f'Got exception -> {exception_message} for text -> {text}')
             
     async def get_content_from_db(self,text:str,url:str,search_semaphore:asyncio.Semaphore)->list[str]:
-        logger.debug(f'inside get contenct from db for -> {text}')
+        #logger.debug(f'inside get contenct from db for -> {text}')
         logger.debug(f'get file from db semaphore -> {search_semaphore}')
         try:
             _, embeddings = await embed(clean(text),url,search_semaphore)
@@ -70,7 +70,7 @@ class VectorService(ElasticRepository):
         texts = []
         async for text in self.search(index_name='search_index',text=text,embeddings=embeddings):
             texts.append(text)
-        logger.debug(f'got texts -> {texts}')
+        #logger.debug(f'got texts -> {texts}')
         content = '\n'.join([i['text'] for i in texts])
         logger.debug(f'the contect is -> {content}')
         return content
